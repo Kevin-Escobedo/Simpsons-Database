@@ -24,12 +24,22 @@ class SimpsonsDatabase:
         self.db.close()
 
 
+def add_episodes(sd: SimpsonsDatabase) -> None:
+    '''Adds episodes to the Database'''
+    season_num = 1
+    while True:
+        try:
+            file = open("titles/season_{}_titles.txt".format(season_num, "r"))
+            sd.create_table("simpsons_season_{}".format(season_num))
+            info = file.readlines()
+            file.close()
+            for i, title in enumerate(info):
+                sd.insert_episode("simpsons_season_{}".format(season_num), i+1, title)
+            season_num += 1
+        except FileNotFoundError:
+            break
+    sd.close_connection()
+
 if __name__ == "__main__":
     sd = SimpsonsDatabase()
-    sd.create_table("simpsons_season_1")
-
-    with open("season_1_titles.txt", "r") as info:
-        for i, title in enumerate(info.readlines()):
-            sd.insert_episode("simpsons_season_1", i+1, title)
-
-    sd.close_connection()
+    add_episodes(sd)
