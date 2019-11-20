@@ -23,12 +23,24 @@ class RandomEpisode:
         except FileNotFoundError:
             return set()
 
-    def update_watch_history(self, episode: (int, int)) -> None:
+    def update_watch_history(self) -> None:
         '''Updates the watch history'''
-        self.watch_history.add(episode)
         file = open("watch_history.sim", "wb")
         pickle.dump(self.watch_history, file)
         file.close()
+
+    def add_episode(self, episode: (int, int)) -> None:
+        '''Adds episode from watch history'''
+        self.watch_history.add(episode)
+        self.update_watch_history()
+
+    def remove_episode(self, episode: (int, int)) -> None:
+        '''Removes an episode from watch history'''
+        try:
+            self.watch_history.remove(episode)
+        except KeyError:
+            pass
+        self.update_watch_history()
         
     def generate_random_episode(self) -> (int, int):
         '''Randomly picks a Simpsons episode'''
@@ -50,7 +62,7 @@ class RandomEpisode:
         while seen:
             episode = self.generate_random_episode()
             seen = self.seen_episode(episode)
-        self.update_watch_history(episode)
+        self.add_episode(episode)
         return episode
 
 
