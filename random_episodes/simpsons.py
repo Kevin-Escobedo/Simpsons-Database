@@ -16,7 +16,7 @@ class RandomEpisode:
     def get_watch_history(self) -> set:
         '''Keeps track of the episodes already watched'''
         try:
-            file = open("watch_history.sim", "rb")
+            file = open("simpsons.his", "rb")
             watch_history = pickle.load(file)
             file.close()
             return watch_history
@@ -25,7 +25,7 @@ class RandomEpisode:
 
     def update_watch_history(self) -> None:
         '''Updates the watch history'''
-        file = open("watch_history.sim", "wb")
+        file = open("simpsons.his", "wb")
         pickle.dump(self.watch_history, file)
         file.close()
 
