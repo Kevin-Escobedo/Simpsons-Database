@@ -40,6 +40,16 @@ def add_episodes(sd: SimpsonsDatabase) -> None:
             break
     sd.close_connection()
 
+def add_total(sd: SimpsonsDatabase) -> None:
+    '''Adds every episode'''
+    file = open("titles/episode_titles.txt", "r")
+    sd.create_table("simpsons_episodes")
+    info = file.readlines()
+    file.close()
+    for i,title in enumerate(info):
+        sd.insert_episode("simpsons_episodes", i+1, title)
+    sd.close_connection()
+
 if __name__ == "__main__":
     sd = SimpsonsDatabase()
-    add_episodes(sd)
+    add_total(sd)
