@@ -1,3 +1,5 @@
+#Author: Kevin C. Escobedo
+#Email: escobedo001@gmail.com
 import sqlite3
 
 class SimpsonsDatabase:
@@ -18,6 +20,24 @@ class SimpsonsDatabase:
         except sqlite3.IntegrityError:
             pass
 
+    def get_episode_number(self, title:str) -> int:
+        '''Finds the total episode number based on the input title'''
+        self.cursor.execute('''SELECT * FROM simpsons_episodes WHERE title=?''', (title,))
+        data = self.cursor.fetchall()
+        try:
+            return data[0][0]
+        except IndexError:
+            return -1
+
+    def get_episode_title(self, total_num:int) -> str:
+        '''Finds the episode title based on input number'''
+        self.cursor.execute('''SELECT * FROM simpsons_episodes WHERE episode=?''', (total_num,))
+        data = self.cursor.fetchall()
+        try:
+            return data[0][1]
+        except IndexError:
+            return "No Episode Found"
+
     def close_connection(self):
         '''Closes the connection to the database'''
         self.db.commit()
@@ -34,11 +54,10 @@ def add_episodes(sd: SimpsonsDatabase) -> None:
             info = file.readlines()
             file.close()
             for i, title in enumerate(info):
-                sd.insert_episode("simpsons_season_{}".format(season_num), i+1, title)
+                sd.insert_episode("simpsons_season_{}".format(season_num), i+1, title.strip())
             season_num += 1
         except FileNotFoundError:
             break
-    sd.close_connection()
 
 def add_total(sd: SimpsonsDatabase) -> None:
     '''Adds every episode'''
@@ -47,9 +66,8 @@ def add_total(sd: SimpsonsDatabase) -> None:
     info = file.readlines()
     file.close()
     for i,title in enumerate(info):
-        sd.insert_episode("simpsons_episodes", i+1, title)
-    sd.close_connection()
+        sd.insert_episode("simpsons_episodes", i+1, title.strip())
 
 if __name__ == "__main__":
     sd = SimpsonsDatabase()
-    add_total(sd)
+    sd.close_connection()
