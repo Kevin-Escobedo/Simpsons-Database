@@ -70,4 +70,6 @@ def add_total(sd: SimpsonsDatabase) -> None:
 
 if __name__ == "__main__":
     sd = SimpsonsDatabase()
+    add_total(sd)
+    add_episodes(sd)
     sd.close_connection()
